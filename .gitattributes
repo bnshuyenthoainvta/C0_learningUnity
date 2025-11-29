@@ -1,2 +1,31 @@
+# Force all text files to use LF
+* text=auto eol=lf
+
+# Unity C# scripts
 *.cs text eol=lf
+
+# Unity meta files
 *.meta text eol=lf
+
+# Unity project & assets
+*.unity text eol=lf
+*.mat   text eol=lf
+*.shader text eol=lf
+*.anim text eol=lf
+*.controller text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+*.asmdef text eol=lf
+*.uxml text eol=lf
+*.uss text eol=lf
+
+# Binary files (Git sẽ không đổi line ending)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.fbx binary
+*.prefab binary
+*.mp3 binary
+*.wav binary
+*.ttf binary
+*.dll binary
