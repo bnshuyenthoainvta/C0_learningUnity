@@ -6,8 +6,8 @@ using UnityEngine;
 
 public abstract class Animal : MonoBehaviour
 {
-    float weight = 2;
-    int legs = 4;
+    [SerializeField] protected float weight = 2;
+    [SerializeField] protected int legs = 4;
 
     private void Awake()
     {
@@ -35,7 +35,7 @@ public abstract class Animal : MonoBehaviour
     {
         return this.weight;
     }
-    private void GetRandomWeight()
+    public void GetRandomWeight()
     {
         this.weight = Random.Range(1f, 30f);
     }

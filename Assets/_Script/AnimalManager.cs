@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class AnimalManager : MonoBehaviour
 {
+    [SerializeField] protected List<Transform> defaultAnimals = new ();
     [SerializeField] protected List<Animal> animals = new ();
-    [SerializeField] protected List<Transform> DefaultAnimals = new ();
-    [SerializeField] protected List<Animal> animalsSortByWeight = new ();
+
+    public List<Animal> Animals => animals;
+
     void Start()
     {
         long startTime = UnixTime.GetUnixTimeMicro();
@@ -15,8 +18,7 @@ public class AnimalManager : MonoBehaviour
 
         this.CreatedRandomAnimal();
         this.GetAnimal();
-        this.AnimalToDoSomething();
-        this.SortAnimalByWeight();
+        this.ShowAnimalInfor();
 
         long nowTime = UnixTime.GetUnixTimeMicro();
         Debug.Log("======== nowTime: " + nowTime);
@@ -25,73 +27,49 @@ public class AnimalManager : MonoBehaviour
         Debug.Log("======== timeDiff: " + timeDiff);
     }
 
-    //## Lấy animal và sắp xếp, Log ra
-    public void GetAnimal()
+    //Lấy danh sách animals tổng hợp
+    protected void GetAnimal()
     {
-        foreach (Transform child in transform)
+        animals.Clear();
+        foreach(Transform child in transform)
         {
             Animal animal = child.GetComponent<Animal>();
-            animals.Add(animal);
+            this.animals.Add(animal);
         }
     }
     
-    public void AnimalToDoSomething()
+    //In ra thông tin animal
+    public void ShowAnimalInfor()
     {
         foreach(Animal animal in animals)
         {
-            string infor = animal.GetInFor();
+            string animalInfor = animal.GetInFor();
             Debug.Log(animal.name);
-            Debug.Log(infor);
+            Debug.Log(animalInfor);
         }
     }
 
-    public void SortAnimalByWeight()
-    {
-        Debug.Log("====SortAnimalByWeight====");
-        this.animalsSortByWeight = new(this.animals);
-        for(int x=0; x<this.animalsSortByWeight.Count-1;x++)
-        {
-            for(int y=x+1;y<this.animalsSortByWeight.Count;y++)
-            {
-                if(this.animalsSortByWeight[x].GetWeight() > this.animalsSortByWeight[y].GetWeight())
-                {
-                    Animal temp = this.animalsSortByWeight[y];
-                    this.animalsSortByWeight[y] = this.animalsSortByWeight[x];
-                    this.animalsSortByWeight[x] = temp;
-                }
-            }
-        }
-        foreach(Animal animal in animalsSortByWeight)
-        {
-            string infor = animal.GetInFor();
-            Debug.Log(animal.name);
-            Debug.Log(infor);
-        }
-    }
-
-
-    //##RanDom vô số animal
+    //Tạo random vô số animal
     public void CreatedRandomAnimal()
     {
-        //Tạo danh sách Transform Default Animals
-        this.AddDefaultAnimals();
+        //Lấy danh sách animal mặc định
+        defaultAnimals.Clear();
+        foreach(Transform child in transform)
+        {
+            this.defaultAnimals.Add(child);
+        }
+    
+        //Số lượng animal random cần tạo ra
         int GenerateCount = 20000;
         for(int i=0;i<GenerateCount;i++)
         {
             //Tạo random animals
-            int randomIdex = Random.Range(0, this.DefaultAnimals.Count);
-            Transform RandomChild = this.DefaultAnimals[randomIdex];
-            //Dùng GameObject để khởi tạo animal có thông số của random animals
-            Transform NewRandomChild = GameObject.Instantiate(RandomChild);
-            NewRandomChild.parent = transform;
-        }
-    }
-
-    public void AddDefaultAnimals()
-    {
-        foreach(Transform child in transform)
-        {
-            this.DefaultAnimals.Add(child);
+            int randomIdex = Random.Range(0, this.defaultAnimals.Count);
+            Transform RandomChild = this.defaultAnimals[randomIdex];
+            //Dùng GameObject để khởi tạo animal có thông số của random animals và gán vào thành con của transform hiện tại
+            Transform NewRandomChild = GameObject.Instantiate(RandomChild, transform);
+            Animal animal = NewRandomChild.GetComponent<Animal>();
+            animal.GetRandomWeight();
         }
     }
 }
